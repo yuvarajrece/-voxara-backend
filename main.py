@@ -120,8 +120,24 @@ def get_missed_calls(auth=Depends(verify_api_key)):
         "data": missed
     }
 
+# Save call summary
+class CallSummary(BaseModel):
+    summary: str
 
+@app.post("/api/save-summary")
+def save_summary(data: CallSummary, auth=Depends(verify_api_key)):
+    record = {
+        "summary": data.summary,
+        "created_at": datetime.utcnow()
+    }
+    db["call_summaries"].insert_one(record)
+    return {
+        "success": True,
+        "message": "Summary saved"
+    }
+    
 # Health check
 @app.get("/")
 def root():
+
     return {"status": "Voxara NBFC Backend Running"}
