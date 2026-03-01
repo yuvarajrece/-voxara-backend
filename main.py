@@ -4,14 +4,20 @@ from pydantic import BaseModel
 from datetime import datetime
 from dotenv import load_dotenv
 from typing import Optional
+import certifi
 import os
 
 load_dotenv()
 
 app = FastAPI(title="Voxara NBFC Backend")
 
-# MongoDB Atlas Connection
-client = MongoClient(os.getenv("MONGO_URI"))
+# Fixed MongoDB Atlas Connection with SSL
+client = MongoClient(
+    os.getenv("MONGO_URI"),
+    tls=True,
+    tlsCAFile=certifi.where()
+)
+
 db = client["nbfc_updates"]
 collection = db["daily_updates"]
 missed_collection = db["missed_calls"]
@@ -25,7 +31,7 @@ def verify_api_key(x_api_key: str = Header(...)):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 
-# Schema for completed call
+# Schema
 class DailyUpdate(BaseModel):
     employee_name: str
     visits_count: int
@@ -35,7 +41,6 @@ class DailyUpdate(BaseModel):
     tomorrow_goal: str
 
 
-# Schema for missed call
 class MissedCall(BaseModel):
     phone_number: str
     reason: Optional[str] = "Employee unavailable"
@@ -74,70 +79,34 @@ def missed_call(data: MissedCall, auth=Depends(verify_api_key)):
         "created_at": datetime.utcnow()
     }
     missed_collection.insert_one(record)
-    return {
-        "success": True,
-        "message": "Missed call logged"
-    }
+    return {"success": True, "message": "Missed call logged"}
 
 
-# Get all completed updates
+# Get all updates
 @app.get("/api/updates")
 def get_all_updates(auth=Depends(verify_api_key)):
     updates = list(collection.find({}, {"_id": 0}))
-    return {
-        "success": True,
-        "total": len(updates),
-        "data": updates
-    }
+    return {"success": True, "total": len(updates), "data": updates}
 
 
-# Get only flagged queries
+# Get flagged queries
 @app.get("/api/queries")
 def get_flagged_queries(auth=Depends(verify_api_key)):
     queries = list(collection.find(
         {"has_query": "Yes"},
-        {
-            "_id": 0,
-            "employee_name": 1,
-            "employee_query": 1,
-            "call_date": 1
-        }
+        {"_id": 0, "employee_name": 1, "employee_query": 1, "call_date": 1}
     ))
-    return {
-        "success": True,
-        "total": len(queries),
-        "data": queries
-    }
+    return {"success": True, "total": len(queries), "data": queries}
 
 
 # Get missed calls
 @app.get("/api/missed-calls")
 def get_missed_calls(auth=Depends(verify_api_key)):
     missed = list(missed_collection.find({}, {"_id": 0}))
-    return {
-        "success": True,
-        "total": len(missed),
-        "data": missed
-    }
+    return {"success": True, "total": len(missed), "data": missed}
 
-# Save call summary
-class CallSummary(BaseModel):
-    summary: str
 
-@app.post("/api/save-summary")
-def save_summary(data: CallSummary, auth=Depends(verify_api_key)):
-    record = {
-        "summary": data.summary,
-        "created_at": datetime.utcnow()
-    }
-    db["call_summaries"].insert_one(record)
-    return {
-        "success": True,
-        "message": "Summary saved"
-    }
-    
 # Health check
 @app.get("/")
 def root():
-
     return {"status": "Voxara NBFC Backend Running"}
