@@ -104,9 +104,23 @@ def get_flagged_queries(auth=Depends(verify_api_key)):
 def get_missed_calls(auth=Depends(verify_api_key)):
     missed = list(missed_collection.find({}, {"_id": 0}))
     return {"success": True, "total": len(missed), "data": missed}
+class CallSummary(BaseModel):
+    summary: str
 
+@app.post("/api/save-summary")
+def save_summary(data: CallSummary, auth=Depends(verify_api_key)):
+    record = {
+        "summary": data.summary,
+        "created_at": datetime.utcnow()
+    }
+    db["call_summaries"].insert_one(record)
+    return {
+        "success": True,
+        "message": "Summary saved"
+    }
 
 # Health check
 @app.get("/")
 def root():
     return {"status": "Voxara NBFC Backend Running"}
+
