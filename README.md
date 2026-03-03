@@ -15,6 +15,11 @@ Jamie is an AI voice agent that calls Loan Recovery Agents on behalf of the Admi
 - Tomorrow's target or goal
 
 ---
+## Video 🎥
+
+ https://tinywebs.info/gvbcsw
+
+---
 
 ## 🏗️ Architecture
 
