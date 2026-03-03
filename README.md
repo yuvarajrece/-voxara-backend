@@ -3,24 +3,6 @@
 An AI-powered outbound voice calling system that automatically collects daily work updates from Loan Recovery Agents at the end of their workday.
 
 ---
-
-## 📋 Table of Contents
-
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Tech Stack](#tech-stack)
-- [Features](#features)
-- [Call Flow](#call-flow)
-- [Project Structure](#project-structure)
-- [Setup & Installation](#setup--installation)
-- [Environment Variables](#environment-variables)
-- [API Endpoints](#api-endpoints)
-- [Deployment](#deployment)
-- [Cost Analysis](#cost-analysis)
-- [Future Enhancements](#future-enhancements)
-
----
-
 ## 🎯 Overview
 
 Jamie is an AI voice agent that calls Loan Recovery Agents on behalf of the Admin Office of a Non-Banking Financial Company (NBFC). It collects structured daily work updates and stores them in MongoDB Atlas — without any human involvement.
@@ -105,99 +87,6 @@ Jamiee-backend/
 ```
 
 ---
-
-## ⚙️ Setup & Installation
-
-### Prerequisites
-- Python 3.11+
-- MongoDB Atlas account
-- LiveKit Cloud account
-- OpenAI API account
-- Render account
-
-### Step 1: Clone the Repository
-```bash
-git clone https://github.com/yourusername/jamiee-backend.git
-cd jamiee-backend
-```
-
-### Step 2: Create Virtual Environment
-```bash
-python -m venv .venv
-.venv\Scripts\activate  # Windows
-source .venv/bin/activate  # Mac/Linux
-```
-
-### Step 3: Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### Step 4: Create `.env` File
-```bash
-cp .env.example .env
-# Fill in all values
-```
-
-### Step 5: Run Locally
-```bash
-python agent.py dev
-```
-
----
-
-## 🔐 Environment Variables
-
-Create a `.env` file with these values:
-
-```env
-# MongoDB
-MONGO_URI=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/nbfc_updates
-
-# API Authentication
-API_KEY=your_api_key_here
-
-# OpenAI
-OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxx
-
-# Murf AI (TTS)
-MURF_API_KEY=your_murf_api_key
-
-# Sarvam AI (STT)
-SARVAM_API_KEY=your_sarvam_api_key
-
-# LiveKit
-LIVEKIT_URL=wss://your-project.livekit.cloud
-LIVEKIT_API_KEY=APIxxxxxxxxxxxxxxxxx
-LIVEKIT_API_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxx
-
-# Backend
-BACKEND_URL=https://your-backend.onrender.com
-```
-
-> ⚠️ Never commit `.env` to GitHub. Add it to `.gitignore`.
-
----
-
-## 🔌 API Endpoints
-
-Base URL: `https://your-backend.onrender.com`
-
-All endpoints require header:
-```
-x-api-key: your_api_key
-```
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/` | Health check |
-| POST | `/api/save-update` | Save employee daily update |
-| POST | `/api/missed-call` | Log missed call |
-| POST | `/api/save-summary` | Save call summary |
-| GET | `/api/updates` | Get all completed updates |
-| GET | `/api/queries` | Get flagged admin queries |
-| GET | `/api/missed-calls` | Get missed call logs |
-| GET | `/docs` | FastAPI documentation |
 
 ### Sample Request: Save Update
 ```json
@@ -294,16 +183,6 @@ Annual savings      : ₹1,68,960
 - [ ] Add SMS confirmation after each call
 - [ ] Purchase India +91 phone number
 - [ ] Add data retention policy (delete after 90 days)
-
----
-
-## 🛡️ Security Notes
-
-- All API endpoints protected with `x-api-key` header
-- MongoDB connection uses SSL with certifi
-- `.env` file never committed to GitHub
-- Secrets stored in Render environment variables
-- Secrets stored in LiveKit agent secrets
 
 ---
 
