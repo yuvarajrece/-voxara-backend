@@ -214,6 +214,7 @@ Annual savings      : ₹1,68,960
 - [MongoDB Atlas](https://www.mongodb.com/atlas) — Cloud database
 - [Render](https://render.com) — Backend hosting
 
+https://docs.google.com/document/d/1Rs0VjkTpATsMepVu3hSzf3x3R92qqFJLVgGOx0StcoM/edit?usp=drive_link
 ---
 
 *Built for NBFC Admin Office to automate daily agent reporting.*
